@@ -1,0 +1,38 @@
+[
+  {
+    "id": "s1",
+    "imagem": "/images/hero/torta-chocolate-mesa.jpg",
+    "titulo": "Regadoces",
+    "frase": "Aqui o lema é muuuiiiito recheio sempre.",
+    "subtitulo": "Sabor de *verdade* do jeito que *a gente ama.*",
+    "textoBotao": "COMPRE SEUS REGADOCES",
+    "linkBotao": "/produtos",
+    "ordem": 1,
+    "ativo": true,
+    "overlay": "vinho"
+  },
+  {
+    "id": "s2",
+    "imagem": "/images/hero/mesa-eventos.jpg",
+    "titulo": "Regadoces",
+    "frase": "Encomendas para festas, eventos e momentos especiais.",
+    "subtitulo": "Conte com a Regadoces para a sua comemoração.",
+    "textoBotao": "CONHECER AS ENCOMENDAS",
+    "linkBotao": "/encomendas",
+    "ordem": 2,
+    "ativo": true,
+    "overlay": "marrom"
+  },
+  {
+    "id": "s3",
+    "imagem": "/images/blog/bolo-lotus.jpg",
+    "titulo": "Regadoces",
+    "frase": "Tem um Regadoces para cada momento.",
+    "subtitulo": "Navegue pelo nosso cardápio e experimente.",
+    "textoBotao": "VER O CARDÁPIO",
+    "linkBotao": "/produtos",
+    "ordem": 3,
+    "ativo": true,
+    "overlay": "nenhum"
+  }
+]

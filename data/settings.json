@@ -1,0 +1,93 @@
+[
+  {
+    "id": "loja",
+    "aberta": true,
+    "voltaAs": ""
+  },
+  {
+    "id": "frete",
+    "faixas": [
+      {
+        "ateKm": 1,
+        "valor": 5,
+        "minutos": 11
+      },
+      {
+        "ateKm": 2,
+        "valor": 7,
+        "minutos": 14
+      },
+      {
+        "ateKm": 3,
+        "valor": 9,
+        "minutos": 17
+      },
+      {
+        "ateKm": 4,
+        "valor": 11,
+        "minutos": 19
+      },
+      {
+        "ateKm": 5,
+        "valor": 13,
+        "minutos": 22
+      },
+      {
+        "ateKm": 6,
+        "valor": 15,
+        "minutos": 26
+      },
+      {
+        "ateKm": 7,
+        "valor": 17,
+        "minutos": 29
+      },
+      {
+        "ateKm": 8,
+        "valor": 19,
+        "minutos": 31
+      },
+      {
+        "ateKm": 9,
+        "valor": 21,
+        "minutos": 34
+      },
+      {
+        "ateKm": 10,
+        "valor": 22,
+        "minutos": 36
+      },
+      {
+        "ateKm": 11,
+        "valor": 23,
+        "minutos": 39
+      },
+      {
+        "ateKm": 12,
+        "valor": 24,
+        "minutos": 42
+      },
+      {
+        "ateKm": 13,
+        "valor": 25,
+        "minutos": 44
+      },
+      {
+        "ateKm": 14,
+        "valor": 26,
+        "minutos": 47
+      },
+      {
+        "ateKm": 15,
+        "valor": 27,
+        "minutos": 50
+      }
+    ]
+  },
+  {
+    "id": "google",
+    "link": "https://search.google.com/local/writereview?placeid=ChIJjYit8PeFHi8R1y3d7Q78zQI",
+    "nota": 5,
+    "total": 94
+  }
+]

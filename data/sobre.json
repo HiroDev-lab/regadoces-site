@@ -1,0 +1,31 @@
+[
+  {
+    "id": "sobre",
+    "heroParagrafos": [
+      "A Regadoces nasceu em 2019 com um propósito simples: despertar memórias e criar novos momentos através do sabor.",
+      "Desde então, nossa confeitaria cresceu sem deixar de lado aquilo que nos trouxe até aqui: cuidado no preparo, receitas marcantes e doces feitos para dar vontade de repetir.",
+      "Desde a nossa inauguração trabalhamos incessantemente para expandir a oferta de produtos e tornar a experiência do cliente a melhor possível. Temos orgulho da nossa jornada e queremos continuar melhorando a cada dia.",
+      "Nossos produtos são cuidadosamente testados e selecionados para vocês. Navegue pelo nosso cardápio e experimente comprar no Regadoces."
+    ],
+    "fazemosTitulo": "Tem um Regadoces\npara cada momento.",
+    "fazemosTexto": "Bolos, tortas, brownies, pavês, pudins, brigadeiros e outras sobremesas fazem parte do nosso cardápio. Selecionamos cada produto pensando em entregar sabor, qualidade e uma experiência especial, seja para adoçar um dia comum, presentear alguém ou dividir à mesa.",
+    "fazemosBotao": "CONHECER NOSSO CARDÁPIO",
+    "tiras": [
+      "/images/sobre/momento-1.png",
+      "/images/sobre/momento-2.png",
+      "/images/sobre/momento-3.png",
+      "/images/sobre/momento-4.png"
+    ],
+    "eventosTitulo": "Fazemos parte dos seus\neventos e festas.",
+    "eventosTexto1": "Alguns momentos pedem algo feito\nespecialmente para eles.",
+    "eventosTexto2": "Por isso, além do nosso e-commerce, trabalhamos com encomendas selecionadas para festas, eventos e comemorações, levando o sabor da Regadoces para momentos que merecem ser lembrados.",
+    "cozinhaFoto": "/images/sobre/cozinha-2.jpg",
+    "cozinhaTitulo": "Feito por pessoas. Para pessoas.",
+    "cozinhaParagrafos": [
+      "Por trás de cada Regadoces existe quem acredita que um bom doce vai muito além da receita.",
+      "Existe cuidado na escolha, no preparo e em cada detalhe até chegar à sua mesa.",
+      "É assim que queremos continuar crescendo: criando doces que aproximam pessoas, participam de histórias e deixam aquele gostinho de “quero mais”."
+    ],
+    "cozinhaBotao": "CONHECER NOSSO CARDÁPIO"
+  }
+]

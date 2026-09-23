@@ -1,0 +1,51 @@
+[
+  {
+    "id": "f1",
+    "pergunta": "Como faço um pedido?",
+    "resposta": "Escolha seus produtos, adicione ao carrinho e finalize a compra diretamente pelo site.",
+    "ordem": 1,
+    "ativo": true
+  },
+  {
+    "id": "f2",
+    "pergunta": "Vocês fazem entregas?",
+    "resposta": "Consulte seu endereço ou CEP durante a compra para verificar as opções disponíveis.",
+    "ordem": 2,
+    "ativo": true
+  },
+  {
+    "id": "f3",
+    "pergunta": "Posso retirar meu pedido?",
+    "resposta": "Quando disponível, a opção de retirada aparecerá durante a finalização da compra.",
+    "ordem": 3,
+    "ativo": true
+  },
+  {
+    "id": "f4",
+    "pergunta": "Quais formas de pagamento vocês aceitam?",
+    "resposta": "As opções disponíveis são apresentadas no checkout.",
+    "ordem": 4,
+    "ativo": true
+  },
+  {
+    "id": "f5",
+    "pergunta": "Como funcionam as encomendas?",
+    "resposta": "As encomendas são destinadas a festas, eventos e comemorações e possuem disponibilidade limitada. Acesse nossa página de Encomendas para conhecer as opções e solicitar atendimento.",
+    "ordem": 5,
+    "ativo": true
+  },
+  {
+    "id": "f6",
+    "pergunta": "Com quanto tempo de antecedência devo fazer uma encomenda?",
+    "resposta": "As encomendas são destinadas a festas, eventos e comemorações e possuem disponibilidade limitada. Acesse nossa página de Encomendas para conhecer as opções e solicitar atendimento.",
+    "ordem": 6,
+    "ativo": true
+  },
+  {
+    "id": "f7",
+    "pergunta": "Consigo alterar meu pedido depois da compra?",
+    "resposta": "Entre em contato com nossa equipe o quanto antes. Alterações dependem do estágio de preparação do pedido.",
+    "ordem": 7,
+    "ativo": true
+  }
+]

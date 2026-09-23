@@ -1,0 +1,106 @@
+[
+  {
+    "id": "reganaked-cake",
+    "nome": "RegaNaked Cake",
+    "desc": "Uma opção especial para ser o centro da sua celebração.",
+    "cardFoto": "/images/encomendas/card-reganaked.png",
+    "resumo": "O bolo em camadas à vista, com recheios generosos — escolha o tamanho, a massa e o recheio.",
+    "fotos": [
+      {
+        "url": "/images/encomendas/reganaked-bolo.jpg",
+        "legenda": "RegaNaked Cake"
+      }
+    ],
+    "detalhes": [
+      "11cm (4 pessoas, aprox. 760g) — R$ 160,00",
+      "15cm (8/10 pessoas, aprox. 1,5kg) — R$ 220,00",
+      "17cm (12/15 pessoas, aprox. 2,2kg) — R$ 250,00",
+      "20cm (17/20 pessoas, aprox. 3kg) — R$ 300,00",
+      "23cm (30/35 pessoas, aprox. 4kg) — R$ 395,00",
+      "Massas: Branca, Chocolate, Red Velvet ou Black.",
+      "Recheios: Biscoff*, Branco, Branco c/ Oreo*, Bueno*, Crocante Ovomaltine*, Doce de Leite, Limão, Geleia de Frutas Vermelhas, Goiabada, Meio Amargo, Nesquik, Nutella*, Paçoca, Pistache* ou Preto.",
+      "* Recheios com valor adicional — consulte."
+    ],
+    "whatsappTexto": "Olá! Quero encomendar um RegaNaked Cake.",
+    "ordem": 1
+  },
+  {
+    "id": "micro-brownies",
+    "nome": "Micro Brownies",
+    "desc": "Perfeitos para compor mesas, eventos e lembranças.",
+    "cardFoto": "/images/encomendas/card-mini-brownies.png",
+    "resumo": "Crocantes por fora e macios por dentro — perfeitos para compor mesas, eventos e lembranças.",
+    "fotos": [
+      {
+        "url": "/images/products/083-micro-brownie-4cm-x-4cm.jpg",
+        "legenda": "Brownie preto"
+      },
+      {
+        "url": "/images/products/104-micro-brancawnie-4cm-x-4cm.jpg",
+        "legenda": "Brancawnie (brownie branco)"
+      }
+    ],
+    "detalhes": [
+      "Encomendas a partir de 20 unidades.",
+      "Tamanho: 4cm x 4cm — a medida ideal para mesas de festa.",
+      "Brownie preto: a massa tradicional de chocolate.",
+      "Brancawnie: o nosso brownie branco, feito com chocolate branco."
+    ],
+    "whatsappTexto": "Olá! Quero encomendar Micro Brownies para o meu evento.",
+    "cardapio": {
+      "href": "/produtos/brownie",
+      "label": "Ver brownies no cardápio"
+    },
+    "ordem": 2
+  },
+  {
+    "id": "brigadeiro-de-colher",
+    "nome": "Brigadeiro de Colher",
+    "desc": "Uma escolha para quem quer incluir diferentes sabores na experiência.",
+    "cardFoto": "/images/encomendas/card-brigadeiro-colher.png",
+    "resumo": "Uma escolha para quem quer incluir diferentes sabores na experiência.",
+    "fotos": [
+      {
+        "url": "/images/encomendas/card-brigadeiro-colher.png",
+        "legenda": "Brigadeiro de Colher",
+        "recorteCard": true
+      }
+    ],
+    "detalhes": [
+      "Disponível em diferentes sabores.",
+      "Perfeito para mesas de festa, eventos e lembranças.",
+      "Fale com a gente para montar a quantidade ideal para o seu evento."
+    ],
+    "whatsappTexto": "Olá! Quero encomendar Brigadeiro de Colher para o meu evento.",
+    "ordem": 4
+  },
+  {
+    "id": "micro-palha-italiana",
+    "nome": "Micro Palha Italiana",
+    "desc": "Uma opção prática e deliciosa para servir aos seus convidados.",
+    "cardFoto": "/images/encomendas/palha-card.jpg",
+    "resumo": "Uma opção prática e deliciosa para servir aos seus convidados.",
+    "fotos": [
+      {
+        "url": "/images/encomendas/palha-embalada.jpg",
+        "legenda": "Embaladas individualmente"
+      },
+      {
+        "url": "/images/encomendas/palha-pote.jpg",
+        "legenda": "Micro Palha Italiana"
+      },
+      {
+        "url": "/images/encomendas/palha-mordida.jpg",
+        "legenda": "O recheio por dentro"
+      }
+    ],
+    "detalhes": [
+      "Encomendas a partir de 20 unidades.",
+      "No tamanho micro, ideal para compor mesas de festas e eventos.",
+      "Cada unidade embalada individualmente, com o selo Regadoces.",
+      "Fale com a gente para conhecer os sabores e valores disponíveis."
+    ],
+    "whatsappTexto": "Olá! Quero encomendar Micro Palhas Italianas para o meu evento.",
+    "ordem": 3
+  }
+]

@@ -1,0 +1,14 @@
+[
+  {
+    "id": "c1",
+    "codigo": "EXEMPLO10",
+    "tipo": "percentual",
+    "valor": 10,
+    "validade": "2027-12-31",
+    "usoMaximo": 100,
+    "usos": 0,
+    "umPorCpf": true,
+    "ativo": false,
+    "criadoEm": "2026-08-26T12:00:00.000Z"
+  }
+]

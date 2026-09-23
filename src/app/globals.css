@@ -1,0 +1,100 @@
+@import "tailwindcss";
+
+/*
+  Design tokens — Manual de marca Regadoces (Apresentação Regadoces.pdf)
+  Paleta oficial: #421A14 (marrom), #720F23 (vinho), #A3B5D3 (azul), #F7E6D5 (creme)
+  Tipografia: Lazy Arie (títulos/logo — substituída por "Chewy" do Google Fonts,
+  que tem acentuação completa em pt-BR) e Montserrat (textos e informações).
+*/
+@theme inline {
+  --color-creme: #f7e6d5;
+  --color-vinho: #720f23;
+  --color-marrom: #421a14;
+  --color-azul: #a3b5d3;
+  --color-azul-btn: #bfd3f4;
+  --color-azul-btn-sombra: #8ba3cf;
+  --color-cinza-card: #dcdcdc;
+  --color-branco-quente: #fffaf4;
+  --font-display: var(--font-chewy), "Comic Sans MS", cursive;
+  --font-sans: var(--font-montserrat), Arial, Helvetica, sans-serif;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--color-creme);
+  color: var(--color-marrom);
+  font-family: var(--font-sans);
+}
+
+/* Botão "ticket" das LPs: recortes côncavos (quarto de círculo) nos 4 cantos */
+.ticket {
+  --notch: 11px;
+  -webkit-mask:
+    radial-gradient(circle var(--notch) at 0 0, transparent 98%, #000) top left,
+    radial-gradient(circle var(--notch) at 100% 0, transparent 98%, #000) top right,
+    radial-gradient(circle var(--notch) at 0 100%, transparent 98%, #000) bottom left,
+    radial-gradient(circle var(--notch) at 100% 100%, transparent 98%, #000) bottom right;
+  -webkit-mask-size: 51% 51%;
+  -webkit-mask-repeat: no-repeat;
+  mask:
+    radial-gradient(circle var(--notch) at 0 0, transparent 98%, #000) top left,
+    radial-gradient(circle var(--notch) at 100% 0, transparent 98%, #000) top right,
+    radial-gradient(circle var(--notch) at 0 100%, transparent 98%, #000) bottom left,
+    radial-gradient(circle var(--notch) at 100% 100%, transparent 98%, #000) bottom right;
+  mask-size: 51% 51%;
+  mask-repeat: no-repeat;
+}
+
+/* Face azul do ticket com as pontas laterais mais escuras, como no design.
+   (Sem camada duplicada/sombra deslocada atrás — o designer pediu o botão
+   "chapado", igual ao Figma.) */
+.ticket-face {
+  --cap: 10px; /* largura das pontas mais escuras (botões pequenos usam menos) */
+  background: linear-gradient(
+    90deg,
+    #9db3da 0 var(--cap),
+    #bfd3f4 var(--cap) calc(100% - var(--cap)),
+    #9db3da calc(100% - var(--cap))
+  );
+}
+
+/* Card de produto com a base derretida OFICIAL do designer
+   ("borda para colocar produtos conforme o padrão.svg"): o topo é um
+   retângulo e os últimos 86px recebem o recorte dos pingos. */
+.card-calda {
+  --calda: 86px;
+  -webkit-mask:
+    linear-gradient(#000, #000) top / 100% calc(100% - var(--calda) + 1px) no-repeat,
+    url("/images/drips/card-base.svg") bottom / 100% var(--calda) no-repeat;
+  mask:
+    linear-gradient(#000, #000) top / 100% calc(100% - var(--calda) + 1px) no-repeat,
+    url("/images/drips/card-base.svg") bottom / 100% var(--calda) no-repeat;
+}
+
+/* Scrollbar discreta nas listas do admin */
+.admin-scroll::-webkit-scrollbar {
+  width: 8px;
+}
+.admin-scroll::-webkit-scrollbar-thumb {
+  background: #c9a3a3;
+  border-radius: 4px;
+}
+
+/* Faixa de categorias: marquee em loop contínuo (conteúdo duplicado, desliza -50%) */
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+.marquee {
+  animation: marquee 28s linear infinite;
+  will-change: transform;
+}
+.marquee:hover {
+  animation-play-state: paused;
+}
+@media (prefers-reduced-motion: reduce) {
+  .marquee { animation: none; }
+}

@@ -1,0 +1,93 @@
+[
+  {
+    "id": "cat1",
+    "nome": "Torta",
+    "ordem": 1,
+    "ativo": true,
+    "imagem": "/images/categories/torta.jpg"
+  },
+  {
+    "id": "cat2",
+    "nome": "Bolo",
+    "ordem": 2,
+    "ativo": true,
+    "imagem": "/images/categories/bolo.jpg"
+  },
+  {
+    "id": "cat3",
+    "nome": "Brownie",
+    "ordem": 3,
+    "ativo": true,
+    "imagem": "/images/categories/brownie.jpg"
+  },
+  {
+    "id": "cat4",
+    "nome": "Brigadeiro",
+    "ordem": 4,
+    "ativo": true,
+    "imagem": "/images/categories/brigadeiro.jpg"
+  },
+  {
+    "id": "cat5",
+    "nome": "Brigadeirão",
+    "ordem": 5,
+    "ativo": true,
+    "imagem": "/images/categories/brigadeirao.jpg"
+  },
+  {
+    "id": "cat6",
+    "nome": "Pudim/Sorvete",
+    "ordem": 6,
+    "ativo": true,
+    "imagem": "/images/categories/pudim-sorvete.jpg"
+  },
+  {
+    "id": "cat7",
+    "nome": "Pavê",
+    "ordem": 7,
+    "ativo": true,
+    "imagem": "/images/categories/pave.jpg"
+  },
+  {
+    "id": "cat8",
+    "nome": "Mousse",
+    "ordem": 8,
+    "ativo": true,
+    "imagem": "/images/categories/mousse.jpg"
+  },
+  {
+    "id": "cat9",
+    "nome": "Cocada",
+    "ordem": 9,
+    "ativo": true,
+    "imagem": ""
+  },
+  {
+    "id": "cat10",
+    "nome": "Encomendas",
+    "ordem": 10,
+    "ativo": true,
+    "imagem": ""
+  },
+  {
+    "id": "cat11",
+    "nome": "Páscoa",
+    "ordem": 11,
+    "ativo": true,
+    "imagem": ""
+  },
+  {
+    "id": "cat12",
+    "nome": "Bebidas",
+    "ordem": 12,
+    "ativo": true,
+    "imagem": "/images/categories/bebidas.jpg"
+  },
+  {
+    "id": "cat13",
+    "nome": "Extras",
+    "ordem": 13,
+    "ativo": true,
+    "imagem": ""
+  }
+]

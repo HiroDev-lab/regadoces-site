@@ -1,0 +1,8 @@
+[
+  {
+    "id": "admin1",
+    "email": "admin@regadoces.com.br",
+    "senhaHash": "$2b$12$ysE1G0VirY82NIXVmKZcY.uR11ExQpmZh/GgGvgItC/2dW9RH8Qr2",
+    "nome": "Administrador"
+  }
+]

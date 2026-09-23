@@ -1,0 +1,74 @@
+[
+  {
+    "id": "b1",
+    "slug": "como-escolher-o-bolo-ideal",
+    "titulo": "Como escolher o bolo ideal para cada comemoração?",
+    "capa": "/images/blog/bolo-lotus.jpg",
+    "resumo": "Novidades, histórias, dicas e tudo que acontece por aqui.",
+    "conteudo": "Escolher o bolo ideal começa pela ocasião: aniversários pedem sabores queridinhos como chocolate com brigadeiro, enquanto casamentos e eventos combinam com opções mais leves.\n\nPense também na quantidade de convidados e no clima do dia. Bolos gelados e tortas refrescantes funcionam melhor em dias quentes.\n\nNa dúvida, fale com a Regadoces: a gente ajuda a montar a escolha perfeita para o seu momento.",
+    "destaque": true,
+    "ordem": 1,
+    "ativo": true,
+    "criadoEm": "2026-08-26T12:00:00.000Z"
+  },
+  {
+    "id": "b2",
+    "slug": "quantos-doces-por-pessoa",
+    "titulo": "Quantos doces por pessoa calcular para uma festa?",
+    "capa": "/images/blog/ricardo-bandeja.jpg",
+    "resumo": "Aprenda a calcular a quantidade certa de doces por convidado.",
+    "conteudo": "Uma boa regra é calcular de 4 a 6 docinhos por pessoa em festas com bolo e salgados.\n\nSe a mesa de doces for a estrela do evento, aumente para 8 a 10 unidades por convidado, variando os sabores.\n\nConte com a Regadoces para montar a combinação ideal para a sua festa.",
+    "destaque": false,
+    "ordem": 2,
+    "ativo": true,
+    "criadoEm": "2026-08-26T12:00:00.000Z"
+  },
+  {
+    "id": "b3",
+    "slug": "mesa-de-doces-aniversario",
+    "titulo": "Como montar uma mesa de doces para aniversário?",
+    "capa": "/images/blog/pave-servido.jpg",
+    "resumo": "Dicas práticas para uma mesa bonita e saborosa.",
+    "conteudo": "Comece definindo o doce principal — um bolo ou torta de destaque — e distribua os acompanhamentos ao redor.\n\nVarie alturas com suportes e bandejas, e escolha de 3 a 5 tipos de doces para não sobrecarregar.\n\nFinalize com detalhes da decoração no tema da festa.",
+    "destaque": false,
+    "ordem": 3,
+    "ativo": true,
+    "criadoEm": "2026-08-26T12:00:00.000Z"
+  },
+  {
+    "id": "b4",
+    "slug": "bolo-ou-torta",
+    "titulo": "Bolo ou torta: qual escolher para cada ocasião?",
+    "capa": "/images/blog/bolo-lotus.jpg",
+    "resumo": "Entenda a diferença e escolha certo.",
+    "conteudo": "Bolos são clássicos de aniversário e combinam com velinhas e parabéns.\n\nTortas geladas brilham em almoços, jantares e dias quentes.\n\nNo fim, o importante é agradar quem vai comer — e na Regadoces tem os dois!",
+    "destaque": false,
+    "ordem": 4,
+    "ativo": true,
+    "criadoEm": "2026-08-26T12:00:00.000Z"
+  },
+  {
+    "id": "b5",
+    "slug": "doces-festa-infantil",
+    "titulo": "Como escolher doces para uma festa infantil?",
+    "capa": "/images/blog/ricardo-bandeja.jpg",
+    "resumo": "Sabores que as crianças amam.",
+    "conteudo": "Para festas infantis, aposte em sabores conhecidos: brigadeiro, ninho e chocolate são aprovação garantida.\n\nPrefira porções individuais, mais fáceis de servir para a criançada.\n\nA Regadoces prepara tudo com muito carinho e qualidade.",
+    "destaque": false,
+    "ordem": 5,
+    "ativo": true,
+    "criadoEm": "2026-08-26T12:00:00.000Z"
+  },
+  {
+    "id": "b6",
+    "slug": "pudim-para-festa",
+    "titulo": "Pudim para festa: vale a pena incluir no cardápio?",
+    "capa": "/images/blog/pave-servido.jpg",
+    "resumo": "O clássico que nunca sai de moda.",
+    "conteudo": "O pudim é um dos doces mais democráticos do Brasil: agrada todas as idades.\n\nEm versões grandes, rende bem e vira o centro das atenções na mesa.\n\nExperimente o Pudim Sorvete da Regadoces: cremoso, refrescante e serve até 15 pessoas.",
+    "destaque": false,
+    "ordem": 6,
+    "ativo": true,
+    "criadoEm": "2026-08-26T12:00:00.000Z"
+  }
+]

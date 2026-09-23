@@ -1,0 +1,44 @@
+========================================
+  COMO RODAR O SITE DA REGADOCES
+========================================
+
+O PASSO 1 só precisa ser feito UMA VEZ na vida.
+Depois disso, é só o PASSO 2 sempre.
+
+
+ANTES DE TUDO
+-------------
+Extraia o arquivo ZIP antes de usar:
+clique com o BOTÃO DIREITO no zip → "Extrair Tudo" → Extrair.
+Use os arquivos da pasta extraída (não os de dentro do zip).
+
+
+PASSO 1 — SÓ NA PRIMEIRA VEZ
+----------------------------
+1. Dê DOIS CLIQUES no arquivo:  1 - INSTALAR (primeira vez)
+   - Vai abrir uma janela preta. NÃO FECHE.
+   - Ele instala TUDO sozinho (inclusive o Node.js, o motor do site).
+   - Se o Windows perguntar se pode fazer alterações, clique em SIM.
+   - Espere aparecer "PRONTO". Demora alguns minutos.
+   - Precisa estar conectado na internet.
+
+
+PASSO 2 — SEMPRE QUE QUISER VER O SITE
+--------------------------------------
+1. Dê DOIS CLIQUES no arquivo:  2 - ABRIR O SITE
+2. Espere uns segundos. O site abre sozinho no navegador.
+
+PRONTO. É SÓ ISSO.
+
+
+PARA FECHAR O SITE
+------------------
+Feche a janela preta que ficou aberta. Acabou.
+
+
+SE PRECISAR DIGITAR O ENDEREÇO NO NAVEGADOR
+-------------------------------------------
+Site:   http://localhost:3000
+
+OBS: o site só funciona no computador onde ele está rodando.
+Ninguém de fora consegue acessar (ainda não está na internet).
