@@ -211,6 +211,8 @@ export type Order = {
   };
   status: "recebido" | "preparando" | "entregue" | "cancelado";
   criadoEm: string;
+  /** id da tentativa vindo do navegador — repetir a mesma tentativa devolve este pedido (idempotência) */
+  tentativaId?: string;
 };
 
 /* ----------------------- Status da loja (online) ----------------------- */

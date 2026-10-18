@@ -62,11 +62,17 @@ const rotuloStatus: Record<Order["pagamento"]["status"], string> = {
   recusado: "recusado",
 };
 
+/** Endereço numa linha, com o complemento (apto, bloco, casa) — o entregador precisa dele. */
+export function enderecoCompleto(entrega: Order["entrega"]): string {
+  const rua = `${entrega.endereco}, ${entrega.numero}${entrega.complemento ? ` - ${entrega.complemento}` : ""}`;
+  return `${rua} - ${entrega.bairro}, ${entrega.cidade}/${entrega.estado}`;
+}
+
 function resumo(pedido: Order): string {
   const itens = pedido.itens.map((i) => `${i.quantidade}x ${i.nome}`).join(", ");
   const entrega =
     pedido.entrega.tipo === "entrega"
-      ? `Entrega: ${pedido.entrega.bairro}, ${pedido.entrega.cidade}`
+      ? `Entrega: ${enderecoCompleto(pedido.entrega)}`
       : "Retirada no local";
   const pagamento = `Pagamento: ${detalhePagamento(pedido.pagamento)} — ${rotuloStatus[pedido.pagamento.status]}`;
   return `${pedido.cliente.nome} ${pedido.cliente.sobrenome} — ${itens}\n${pagamento}\n${entrega}\n${pedido.id}`;

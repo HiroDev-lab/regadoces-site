@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import CartSummary from "@/components/CartSummary";
 import CheckoutShell from "@/components/CheckoutShell";
 import { useCart } from "@/components/CartContext";
+import { normalizarUF } from "@/lib/uf";
 
 /*
   Passo 2 — Identificação de entrega (LP 02).
@@ -51,11 +52,20 @@ export default function IdentificacaoPage() {
   const { itens } = useCart();
   const [form, setForm] = useState<Identificacao>(VAZIO);
   const [erro, setErro] = useState("");
+  // campos vazios ganham borda vinho quando o cliente tenta avançar
+  const [camposFaltando, setCamposFaltando] = useState<(keyof Identificacao)[]>([]);
 
   useEffect(() => {
     try {
       const raw = sessionStorage.getItem(KEY);
-      if (raw) setForm({ ...VAZIO, ...JSON.parse(raw) });
+      if (raw) {
+        const salvo = { ...VAZIO, ...JSON.parse(raw) } as Identificacao;
+        // quem salvou "PARANÁ" antes da correção ganha a sigla ao voltar
+        if (salvo.estado && salvo.estado.length > 2) {
+          salvo.estado = normalizarUF(salvo.estado) || salvo.estado;
+        }
+        setForm(salvo);
+      }
     } catch {}
   }, []);
 
@@ -97,19 +107,62 @@ export default function IdentificacaoPage() {
 
   function continuar() {
     setErro("");
-    if (!form.nome || !form.sobrenome || !form.email || !form.cpf || !form.telefone) {
-      setErro("Preencha nome, sobrenome, e-mail, CPF e telefone.");
+    setCamposFaltando([]);
+    // diz exatamente o que falta (e leva o cliente até o 1º campo vazio)
+    const obrigatorios: [keyof Identificacao, string][] = [
+      ["nome", "nome"],
+      ["sobrenome", "sobrenome"],
+      ["email", "e-mail"],
+      ["cpf", "CPF"],
+      ["telefone", "telefone"],
+    ];
+    if (form.tipo === "entrega") {
+      obrigatorios.push(
+        ["cep", "CEP"],
+        ["endereco", "endereço"],
+        ["numero", "número"],
+        ["bairro", "bairro"],
+        ["cidade", "cidade"],
+        ["estado", "estado (UF)"]
+      );
+    }
+    const faltando = obrigatorios.filter(([campo]) => !String(form[campo] ?? "").trim());
+    if (faltando.length > 0) {
+      const nomes = faltando.map(([, rotulo]) => rotulo).join(", ");
+      setErro(
+        form.tipo === "entrega" && faltando.some(([c]) => c === "cep" || c === "endereco" || c === "numero" || c === "bairro" || c === "cidade" || c === "estado")
+          ? `Falta preencher: ${nomes}. (Ou escolha "Retirada no Local".)`
+          : `Falta preencher: ${nomes}.`
+      );
+      setCamposFaltando(faltando.map(([c]) => c));
       return;
     }
-    if (
-      form.tipo === "entrega" &&
-      (!form.cep || !form.endereco || !form.numero || !form.bairro || !form.cidade || !form.estado)
-    ) {
-      setErro("Preencha o endereço de entrega completo (ou escolha Retirada no Local).");
+    if (!/^\S+@\S+\.\S+$/.test(form.email.trim())) {
+      setErro("O e-mail parece incompleto (ex.: nome@gmail.com).");
+      setCamposFaltando(["email"]);
       return;
+    }
+    if (form.cpf.replace(/\D/g, "").length !== 11) {
+      setErro("O CPF precisa ter 11 números.");
+      setCamposFaltando(["cpf"]);
+      return;
+    }
+    if (form.tipo === "entrega") {
+      // "Paraná"/"PARANÁ" (autofill do celular) vira "PR"; o que não for
+      // reconhecido é barrado aqui, com aviso claro, e não no servidor
+      const uf = normalizarUF(form.estado);
+      if (!uf) {
+        setErro('Estado não reconhecido. Use a sigla de 2 letras (ex.: PR) ou toque em "Buscar" ao lado do CEP.');
+        setCamposFaltando(["estado"]);
+        return;
+      }
+      if (uf !== form.estado) set("estado", uf);
     }
     router.push("/checkout/pagamento");
   }
+
+  const falta = (campo: keyof Identificacao) =>
+    camposFaltando.includes(campo) ? " !border-vinho ring-1 ring-vinho/60" : "";
 
   const label = "font-sans text-[clamp(16px,1.05vw,20px)] text-marrom";
   const input =
@@ -126,23 +179,23 @@ export default function IdentificacaoPage() {
           <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div>
               <label className={label} htmlFor="nome">Nome</label>
-              <input id="nome" className={input} placeholder="Primeiro nome" value={form.nome} onChange={(e) => set("nome", e.target.value)} maxLength={60} />
+              <input id="nome" className={input + falta("nome")} placeholder="Primeiro nome" value={form.nome} onChange={(e) => set("nome", e.target.value)} maxLength={60} />
             </div>
             <div>
               <label className={label} htmlFor="sobrenome">Sobrenome</label>
-              <input id="sobrenome" className={input} placeholder="Sobrenome completo" value={form.sobrenome} onChange={(e) => set("sobrenome", e.target.value)} maxLength={80} />
+              <input id="sobrenome" className={input + falta("sobrenome")} placeholder="Sobrenome completo" value={form.sobrenome} onChange={(e) => set("sobrenome", e.target.value)} maxLength={80} />
             </div>
             <div className="sm:col-span-2">
               <label className={label} htmlFor="email">E-mail</label>
-              <input id="email" type="email" className={input} placeholder="exemplodeemail@gmail.com" value={form.email} onChange={(e) => set("email", e.target.value)} maxLength={120} />
+              <input id="email" type="email" className={input + falta("email")} placeholder="exemplodeemail@gmail.com" value={form.email} onChange={(e) => set("email", e.target.value)} maxLength={120} />
             </div>
             <div>
               <label className={label} htmlFor="cpf">CPF</label>
-              <input id="cpf" inputMode="numeric" className={input} placeholder="000.000.000-00" value={form.cpf} onChange={(e) => set("cpf", e.target.value)} maxLength={14} />
+              <input id="cpf" inputMode="numeric" className={input + falta("cpf")} placeholder="000.000.000-00" value={form.cpf} onChange={(e) => set("cpf", e.target.value)} maxLength={14} />
             </div>
             <div>
               <label className={label} htmlFor="telefone">Telefone / Whatsapp</label>
-              <input id="telefone" inputMode="tel" className={input} placeholder="(00) 0000-0000" value={form.telefone} onChange={(e) => set("telefone", e.target.value)} maxLength={16} />
+              <input id="telefone" inputMode="tel" className={input + falta("telefone")} placeholder="(00) 0000-0000" value={form.telefone} onChange={(e) => set("telefone", e.target.value)} maxLength={16} />
             </div>
           </div>
 
@@ -202,7 +255,7 @@ export default function IdentificacaoPage() {
                 <div>
                   <label className={label} htmlFor="cep">CEP</label>
                   <div className="flex gap-0">
-                    <input id="cep" inputMode="numeric" className={`${inputCreme} rounded-r-none`} placeholder="00000-000" value={form.cep} onChange={(e) => set("cep", e.target.value)} onBlur={buscarCep} maxLength={9} />
+                    <input id="cep" inputMode="numeric" className={`${inputCreme} rounded-r-none${falta("cep")}`} placeholder="00000-000" value={form.cep} onChange={(e) => set("cep", e.target.value)} onBlur={buscarCep} maxLength={9} />
                     <button type="button" onClick={buscarCep} className="mt-1 rounded-r-sm bg-creme px-5 font-sans text-[clamp(15px,0.9vw,17px)] font-medium text-marrom hover:brightness-95">
                       Buscar
                     </button>
@@ -211,11 +264,11 @@ export default function IdentificacaoPage() {
                 <div />
                 <div>
                   <label className={label} htmlFor="endereco">Endereço</label>
-                  <input id="endereco" className={inputCreme} placeholder="Nome da rua, avenida..." value={form.endereco} onChange={(e) => set("endereco", e.target.value)} maxLength={120} />
+                  <input id="endereco" className={inputCreme + falta("endereco")} placeholder="Nome da rua, avenida..." value={form.endereco} onChange={(e) => set("endereco", e.target.value)} maxLength={120} />
                 </div>
                 <div>
                   <label className={label} htmlFor="numero">Número</label>
-                  <input id="numero" className={inputCreme} placeholder="Ex: 123" value={form.numero} onChange={(e) => set("numero", e.target.value)} maxLength={10} />
+                  <input id="numero" className={inputCreme + falta("numero")} placeholder="Ex: 123" value={form.numero} onChange={(e) => set("numero", e.target.value)} maxLength={10} />
                 </div>
                 <div>
                   <label className={label} htmlFor="complemento">Complemento (opcional)</label>
@@ -223,21 +276,25 @@ export default function IdentificacaoPage() {
                 </div>
                 <div>
                   <label className={label} htmlFor="bairro">Bairro</label>
-                  <input id="bairro" className={inputCreme} placeholder="Seu bairro" value={form.bairro} onChange={(e) => set("bairro", e.target.value)} maxLength={60} />
+                  <input id="bairro" className={inputCreme + falta("bairro")} placeholder="Seu bairro" value={form.bairro} onChange={(e) => set("bairro", e.target.value)} maxLength={60} />
                 </div>
                 <div>
                   <label className={label} htmlFor="cidade">Cidade</label>
-                  <input id="cidade" className={inputCreme} placeholder="Sua cidade" value={form.cidade} onChange={(e) => set("cidade", e.target.value)} maxLength={60} />
+                  <input id="cidade" className={inputCreme + falta("cidade")} placeholder="Sua cidade" value={form.cidade} onChange={(e) => set("cidade", e.target.value)} maxLength={60} />
                 </div>
                 <div>
                   <label className={label} htmlFor="estado">Estado</label>
-                  <input id="estado" className={inputCreme} placeholder="UF" value={form.estado} onChange={(e) => set("estado", e.target.value.toUpperCase())} maxLength={2} />
+                  <input id="estado" className={inputCreme + falta("estado")} placeholder="UF" value={form.estado} onChange={(e) => {
+                    const v = e.target.value;
+                    // autofill fura o maxLength e manda "Paraná" → guarda "PR"
+                    set("estado", v.length > 2 ? normalizarUF(v) || v.toUpperCase() : v.toUpperCase());
+                  }} maxLength={2} autoComplete="address-level1" />
                 </div>
               </div>
             </div>
           )}
 
-          {erro && <p className="mt-6 font-sans text-[15px] font-medium text-vinho">{erro}</p>}
+          {/* erro aparece junto do botão, dentro do resumo (visível no celular) */}
         </div>
 
         <CartSummary
@@ -246,6 +303,7 @@ export default function IdentificacaoPage() {
           ctaLabel="PRÓXIMO PASSO PAGAMENTO"
           onCta={continuar}
           ctaDisabled={itens.length === 0}
+          erro={erro || undefined}
         />
       </div>
     </CheckoutShell>

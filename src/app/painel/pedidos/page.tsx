@@ -134,7 +134,7 @@ export default function AdminPedidos() {
                 <p className="mt-0.5 font-sans text-[13px] text-marrom/60">
                   {new Date(o.criadoEm).toLocaleString("pt-BR")} ·{" "}
                   {o.entrega.tipo === "entrega"
-                    ? `${o.entrega.endereco}, ${o.entrega.numero} - ${o.entrega.bairro}, ${o.entrega.cidade}/${o.entrega.estado}`
+                    ? `${o.entrega.endereco}, ${o.entrega.numero}${o.entrega.complemento ? ` - ${o.entrega.complemento}` : ""} - ${o.entrega.bairro}, ${o.entrega.cidade}/${o.entrega.estado}`
                     : "Retirada no local"}{" "}
                   ·{" "}
                   {o.pagamento.metodo === "pix"

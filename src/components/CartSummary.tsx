@@ -51,6 +51,7 @@ export default function CartSummary({
   ctaDisabled = false,
   mostrarItens = false,
   mostrarSelos = false,
+  erro,
 }: {
   passo: 1 | 2 | 3;
   ctaLabel: string;
@@ -59,6 +60,13 @@ export default function CartSummary({
   ctaDisabled?: boolean;
   mostrarItens?: boolean;
   mostrarSelos?: boolean;
+  /**
+   * Erro da etapa (validação ou resposta da /api/checkout). Fica logo
+   * acima do botão: no celular o resumo vem DEPOIS do formulário, então
+   * um erro mostrado no formulário fica fora da tela e o cliente acha
+   * que o botão "não faz nada" (caso real de 27/09).
+   */
+  erro?: React.ReactNode;
 }) {
   const { itens, subtotal } = useCart();
   // loja fechada (painel do Ricardo) = dá para montar o carrinho,
@@ -269,6 +277,14 @@ export default function CartSummary({
       </div>
 
       <div className="mt-6 text-center">
+        {erro && (
+          <div
+            role="alert"
+            className="mb-4 rounded-xl border border-vinho/50 bg-vinho/10 px-4 py-3 text-left font-sans text-[14px] font-medium text-vinho"
+          >
+            {erro}
+          </div>
+        )}
         {lojaFechada && (
           <div className="mb-4 rounded-xl border border-red-300 bg-red-50 px-4 py-3 text-left">
             <p className="font-sans text-[14px] font-bold text-red-700">

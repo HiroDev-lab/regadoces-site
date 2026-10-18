@@ -21,6 +21,29 @@ import { useCart } from "@/components/CartContext";
 */
 type Metodo = "credito" | "debito" | "pix";
 
+const TENTATIVA_KEY = "regadoces_tentativa_v1";
+
+/**
+ * Id estável por "conteúdo do pedido": enquanto carrinho, cliente, cupom e
+ * forma de pagamento forem os mesmos, toda tentativa manda o mesmo id e o
+ * servidor devolve o pedido já criado (se houver). Mudou algo = id novo.
+ */
+function tentativaIdPara(payload: unknown): string {
+  const assinatura = JSON.stringify(payload);
+  try {
+    const salvo = JSON.parse(sessionStorage.getItem(TENTATIVA_KEY) ?? "null");
+    if (salvo?.assinatura === assinatura && typeof salvo.id === "string") return salvo.id;
+  } catch {}
+  const id =
+    typeof crypto !== "undefined" && "randomUUID" in crypto
+      ? crypto.randomUUID()
+      : `t-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 10)}`;
+  try {
+    sessionStorage.setItem(TENTATIVA_KEY, JSON.stringify({ id, assinatura }));
+  } catch {}
+  return id;
+}
+
 const OPCOES: { valor: Metodo; titulo: string; icone: "cartao" | "pix" }[] = [
   { valor: "credito", titulo: "Cartão de crédito", icone: "cartao" },
   { valor: "debito", titulo: "Cartão de débito", icone: "cartao" },
@@ -33,6 +56,9 @@ export default function PagamentoPage() {
   const [cartaoAtivo, setCartaoAtivo] = useState<boolean | null>(null);
   const [metodo, setMetodo] = useState<Metodo>("pix");
   const [erro, setErro] = useState("");
+  // cupom "1 por CPF" travado por um pedido anterior ainda não pago:
+  // o servidor manda o id e a gente oferece o caminho pro pagamento dele
+  const [pedidoPendenteId, setPedidoPendenteId] = useState("");
   const [enviando, setEnviando] = useState(false);
 
   useEffect(() => {
@@ -58,6 +84,7 @@ export default function PagamentoPage() {
 
   async function finalizar() {
     setErro("");
+    setPedidoPendenteId("");
     if (itens.length === 0) return;
 
     let identificacao = null;
@@ -73,18 +100,31 @@ export default function PagamentoPage() {
 
     setEnviando(true);
     const resumo = loadResumo();
-    const res = await fetch("/api/checkout", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        itens: itens.map((i) => ({ produtoId: i.produtoId, quantidade: i.quantidade })),
-        identificacao,
-        cupom: resumo.cupom || null,
-        cep: resumo.cep,
-        metodo: metodo === "pix" ? "pix" : "cartao",
-        tipoCartao: metodo === "pix" ? undefined : metodo,
-      }),
-    });
+    const payload = {
+      itens: itens.map((i) => ({ produtoId: i.produtoId, quantidade: i.quantidade })),
+      identificacao,
+      cupom: resumo.cupom || null,
+      cep: resumo.cep,
+      metodo: metodo === "pix" ? "pix" : "cartao",
+      tipoCartao: metodo === "pix" ? undefined : metodo,
+    };
+    // id da tentativa: se a resposta se perder no caminho (conexão do
+    // celular caiu, tempo esgotado no servidor), clicar de novo devolve o
+    // MESMO pedido em vez de falhar com "cupom já usado"/"sem estoque"
+    const tentativaId = tentativaIdPara(payload);
+
+    let res: Response;
+    try {
+      res = await fetch("/api/checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ...payload, tentativaId }),
+      });
+    } catch {
+      setEnviando(false);
+      setErro("Sem conexão com o servidor. Verifique a internet e toque em FINALIZAR PEDIDO de novo.");
+      return;
+    }
     const data = await res.json().catch(() => null);
 
     if (res.ok && data?.pedidoId) {
@@ -92,6 +132,7 @@ export default function PagamentoPage() {
       try {
         sessionStorage.removeItem("regadoces_identificacao_v1");
         sessionStorage.removeItem("regadoces_resumo_v1");
+        sessionStorage.removeItem(TENTATIVA_KEY);
       } catch {}
       if (data.pagamentoUrl) {
         // cartão: página segura do C6 Bank (volta para /pedido/<id> depois de pagar)
@@ -102,7 +143,13 @@ export default function PagamentoPage() {
       return;
     }
     setEnviando(false);
-    setErro(data?.erro ?? "Não foi possível concluir o pagamento. Tente novamente.");
+    if (data?.pedidoPendenteId) setPedidoPendenteId(String(data.pedidoPendenteId));
+    setErro(
+      data?.erro ??
+        (res.ok
+          ? "Não foi possível concluir o pagamento. Tente novamente."
+          : `O servidor não respondeu como esperado (código ${res.status}). Toque em FINALIZAR PEDIDO de novo.`)
+    );
   }
 
   return (
@@ -183,7 +230,7 @@ export default function PagamentoPage() {
             </div>
           )}
 
-          {erro && <p className="mt-6 font-sans text-[15px] font-medium text-vinho">{erro}</p>}
+          {/* erro aparece junto do botão, dentro do resumo (visível no celular) */}
         </div>
 
         <CartSummary
@@ -193,6 +240,21 @@ export default function PagamentoPage() {
           ctaLabel={enviando ? "PROCESSANDO..." : "FINALIZAR PEDIDO"}
           onCta={finalizar}
           ctaDisabled={itens.length === 0 || enviando}
+          erro={
+            erro ? (
+              <>
+                <p>{erro}</p>
+                {pedidoPendenteId && (
+                  <a
+                    href={`/pedido/${pedidoPendenteId}`}
+                    className="mt-3 inline-block rounded-md bg-vinho px-4 py-2 text-[14px] font-semibold text-white hover:brightness-110"
+                  >
+                    Abrir o pedido anterior e pagar →
+                  </a>
+                )}
+              </>
+            ) : undefined
+          }
         />
       </div>
     </CheckoutShell>

@@ -10,6 +10,7 @@ import {
   type Product,
 } from "@/lib/db";
 import { validarCupom } from "@/lib/coupons";
+import { normalizarUF } from "@/lib/uf";
 import { calcularFrete } from "@/lib/frete";
 import { notificarNovoPedido } from "@/lib/notificar";
 import { precoAtual } from "@/lib/preco";
@@ -53,14 +54,62 @@ const schema = z.object({
     complemento: z.string().trim().max(60).optional().default(""),
     bairro: z.string().trim().max(60).optional().default(""),
     cidade: z.string().trim().max(60).optional().default(""),
-    estado: z.string().trim().max(2).optional().default(""),
+    // aceita "PR", "Paraná", "PARANÁ" (autofill do celular manda o nome
+    // completo e fura o limite de 2 letras da tela) → vira a sigla
+    estado: z.string().trim().max(60).optional().default("").transform(normalizarUF),
   }),
   cupom: z.string().trim().max(30).nullable(),
   cep: z.string().trim().max(9).optional().default(""),
   metodo: z.enum(["cartao", "pix"]),
   // cartão = crédito ou débito; o cartão em si é digitado na página segura do C6
   tipoCartao: z.enum(["credito", "debito"]).optional().default("credito"),
+  // id da tentativa gerado no navegador (idempotência — ver abaixo)
+  tentativaId: z.string().trim().min(8).max(60).optional(),
 });
+
+/*
+  Mensagem de erro que diz QUAL campo está errado (antes era só "Dados do
+  pedido inválidos", e o cliente não tinha como saber o que revisar).
+*/
+const ROTULO_CAMPO: Record<string, string> = {
+  nome: "nome",
+  sobrenome: "sobrenome",
+  email: "e-mail",
+  cpf: "CPF",
+  telefone: "telefone",
+  tipo: "entrega ou retirada",
+  cep: "CEP",
+  endereco: "endereço",
+  numero: "número",
+  complemento: "complemento",
+  bairro: "bairro",
+  cidade: "cidade",
+  estado: "estado (UF)",
+  itens: "itens do carrinho",
+  cupom: "cupom",
+  metodo: "forma de pagamento",
+};
+
+function mensagemDadosInvalidos(issues: z.ZodIssue[]): string {
+  const campos = Array.from(
+    new Set(
+      issues
+        .map((i) => {
+          const chave = i.path.find((p) => typeof p === "string" && p in ROTULO_CAMPO);
+          return typeof chave === "string" ? ROTULO_CAMPO[chave] : "";
+        })
+        .filter(Boolean)
+    )
+  );
+  if (campos.length === 0) return "Dados do pedido inválidos. Revise as etapas.";
+  const lista = campos.join(", ");
+  const etapa = campos.some((c) => c === "itens do carrinho")
+    ? "Volte ao carrinho"
+    : campos.some((c) => c === "forma de pagamento" || c === "cupom")
+      ? "Revise o pagamento"
+      : "Volte à etapa de identificação";
+  return `Confira o campo ${lista}: ${etapa} e corrija para finalizar.`;
+}
 
 export async function POST(req: Request) {
   // loja fechada = checkout bloqueado (o carrinho continua funcionando)
@@ -80,17 +129,46 @@ export async function POST(req: Request) {
   const parsed = schema.safeParse(body);
   if (!parsed.success) {
     return NextResponse.json(
-      { erro: "Dados do pedido inválidos. Revise as etapas." },
+      { erro: mensagemDadosInvalidos(parsed.error.issues) },
       { status: 400 }
     );
   }
-  const { itens, identificacao, cupom, metodo, tipoCartao } = parsed.data;
+  const { itens, identificacao, cupom, metodo, tipoCartao, tentativaId } = parsed.data;
+
+  // IDEMPOTÊNCIA: se o pedido desta tentativa já foi criado (a resposta se
+  // perdeu no caminho — celular sem sinal, tempo esgotado no servidor — e o
+  // cliente clicou de novo), devolve o mesmo pedido em vez de recusar com
+  // "cupom já usado" / "estoque insuficiente" ou criar um duplicado.
+  if (tentativaId) {
+    const existentes = await readCollection<Order>("orders");
+    const igual = existentes.find((o) => o.tentativaId === tentativaId);
+    if (igual) {
+      return NextResponse.json(respostaPedido(igual));
+    }
+  }
 
   if (identificacao.tipo === "entrega") {
     const e = identificacao;
-    if (!e.cep || !e.endereco || !e.numero || !e.bairro || !e.cidade || !e.estado) {
+    const faltam = (
+      [
+        ["cep", "CEP"],
+        ["endereco", "endereço"],
+        ["numero", "número"],
+        ["bairro", "bairro"],
+        ["cidade", "cidade"],
+      ] as const
+    )
+      .filter(([campo]) => !e[campo])
+      .map(([, rotulo]) => rotulo);
+    if (faltam.length > 0) {
       return NextResponse.json(
-        { erro: "Endereço de entrega incompleto." },
+        { erro: `Endereço de entrega incompleto: falta ${faltam.join(", ")}. Volte à etapa de identificação.` },
+        { status: 400 }
+      );
+    }
+    if (!e.estado) {
+      return NextResponse.json(
+        { erro: 'Estado (UF) não reconhecido. Na etapa de identificação, use a sigla de 2 letras (ex.: PR) ou toque em "Buscar" ao lado do CEP.' },
         { status: 400 }
       );
     }
@@ -164,13 +242,24 @@ export async function POST(req: Request) {
         return true;
       };
       const pedidosAnteriores = await readCollection<Order>("orders");
-      const jaUsou = pedidosAnteriores.some(
+      const jaUsou = pedidosAnteriores.find(
         (o) =>
           contaComoUso(o) &&
           o.cupom?.toUpperCase() === cupomAplicado!.codigo.toUpperCase() &&
           soDigitos(o.cliente.cpf) === cpfCliente
       );
       if (jaUsou) {
+        // o pedido que "segura" o cupom ainda não foi pago (Pix/link em
+        // aberto): em vez de só recusar, aponta o pedido para o cliente pagar
+        if (jaUsou.pagamento.status === "pendente" && jaUsou.status !== "cancelado") {
+          return NextResponse.json(
+            {
+              erro: `Você já tem um pedido com este cupom aguardando pagamento (nº ${jaUsou.id}). Pague esse pedido — ou, se ele expirar sem pagamento, o cupom volta a valer.`,
+              pedidoPendenteId: jaUsou.id,
+            },
+            { status: 400 }
+          );
+        }
         return NextResponse.json(
           { erro: "Este cupom já foi utilizado neste CPF (limite de 1 uso por pessoa)." },
           { status: 400 }
@@ -306,17 +395,37 @@ export async function POST(req: Request) {
     pagamento,
     status: "recebido",
     criadoEm: new Date().toISOString(),
+    ...(tentativaId ? { tentativaId } : {}),
   };
+  // releitura logo antes de gravar: se a mesma tentativa entrou em paralelo
+  // (dois toques rápidos), não duplica o pedido
+  if (tentativaId && orders.some((o) => o.tentativaId === tentativaId)) {
+    return NextResponse.json(respostaPedido(orders.find((o) => o.tentativaId === tentativaId)!));
+  }
   orders.push(pedido);
   await writeCollection("orders", orders);
-  await notificarNovoPedido(pedido); // push no celular do Ricardo (ntfy)
+  // push no celular do Ricardo (ntfy) — nunca pode derrubar a resposta do
+  // pedido que já está gravado
+  try {
+    await notificarNovoPedido(pedido);
+  } catch (e) {
+    console.error("checkout: falha ao notificar novo pedido", e);
+  }
 
-  // cartão: o navegador manda o cliente para a página de pagamento do C6
-  // (ou, no modo simulado, direto para a página do pedido)
-  return NextResponse.json({
-    pedidoId,
+  return NextResponse.json(respostaPedido(pedido));
+}
+
+/**
+ * Resposta do checkout. Cartão pendente: o navegador manda o cliente para a
+ * página de pagamento do C6 (`pagamentoUrl`); Pix (ou modo simulado): direto
+ * para a página do pedido.
+ */
+function respostaPedido(pedido: Order) {
+  const { pagamento } = pedido;
+  return {
+    pedidoId: pedido.id,
     ...(pagamento.metodo === "cartao" && pagamento.status === "pendente" && pagamento.linkPagamento
       ? { pagamentoUrl: pagamento.linkPagamento }
       : {}),
-  });
+  };
 }
